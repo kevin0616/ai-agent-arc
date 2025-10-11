@@ -1,21 +1,20 @@
-# ===== Foundry / Solidity =====
-out/
-cache/
+# Forge
+contracts/out/
+contracts/cache/
 *.dbg.json
 
-# ===== Node / Frontend =====
-node_modules/
-dist/
-.env
-.vite/
-build/
+# Node / Frontend
+frontend/node_modules/
+frontend/.env
+frontend/.next/
+frontend/dist/
 
-# ===== Python / Backend (if any) =====
-__pycache__/
-*.pyc
-.env
+# Python / Backend
+backend/__pycache__/
+backend/*.pyc
+backend/.env
 
-# ===== OS / IDE =====
-.DS_Store
-.idea/
+# IDE / OS
 .vscode/
+.idea/
+.DS_Store

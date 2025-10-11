@@ -1,0 +1,21 @@
+# ===== Foundry / Solidity =====
+out/
+cache/
+*.dbg.json
+
+# ===== Node / Frontend =====
+node_modules/
+dist/
+.env
+.vite/
+build/
+
+# ===== Python / Backend (if any) =====
+__pycache__/
+*.pyc
+.env
+
+# ===== OS / IDE =====
+.DS_Store
+.idea/
+.vscode/

@@ -1,13 +1,19 @@
-
+import { Routes, Route } from "react-router-dom";
+import ChatPage from "./pages/ChatPage";
+import WalletPage from "./pages/WalletPage";
+import HistoryPage from "./pages/HistoryPage";
 
 function App() {
   return (
     <>
-      <div className="h-screen text-red-600 flex items-center justify-center bg-gray-900 text-3xl font-bold">
-        Tailwind + React + Vite setup complete 🎉
-      </div>
+      <Routes>
+        <Route path="/" element={<ChatPage />} />
+        <Route path="/wallet" element={<WalletPage />} />
+        <Route path="/history" element={<HistoryPage />} />
+      </Routes>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
+

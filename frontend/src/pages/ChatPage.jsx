@@ -27,7 +27,9 @@ const ChatPage = () => {
           const url = await synthesizeSpeech(reply)
           const audio = new Audio(url)
           audio.play()
-        } catch {}
+        } catch (error) {
+          console.error("Error playing audio:", error)
+        }
       }
     }
     mediaRecorder.start()

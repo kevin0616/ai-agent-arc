@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react'
 import { synthesizeSpeech, transcribeAudioBlob } from '../lib/elevenlabsClient'
+import ChatInterface from "../components/ChatInterface";
 
 const ChatPage = () => {
   const [messages, setMessages] = useState([])
@@ -42,6 +43,8 @@ const ChatPage = () => {
   }
 
   return (
+    <>
+    <ChatInterface />
     <div className="p-6 space-y-4">
       <div className="text-xl font-semibold">Voice-enabled Chat</div>
       <div className="space-x-2">
@@ -61,6 +64,14 @@ const ChatPage = () => {
         {!messages.length && <div className="opacity-60">Speak a message to get started…</div>}
       </div>
     </div>
+    </>
+
+    // <ChatInterface
+    //   messages={messages}
+    //   recording={recording}
+    //   onStartRecording={startRecording}
+    //   onStopRecording={stopRecording}
+    // />
   )
 }
 

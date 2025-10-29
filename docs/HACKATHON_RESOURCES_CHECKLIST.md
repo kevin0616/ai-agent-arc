@@ -2,9 +2,9 @@
 
 ## Core Links
 - **Arc Docs**: `https://docs.arcblockchain.xyz` (replace with official link)
-- **Arc Testnet RPC**: `<RPC URL here>`
-- **Block Explorer**: `<Explorer URL here>`
-- **USDC on Arc (testnet)**: `<USDC address>`
+- **Arc Testnet RPC**: `https://rpc-test-1.archiechain.io`
+- **Block Explorer / Chain Info**: `https://coinfactory.app/en/chainlist/1244` (Archiescan public explorer TBD)
+- **USDC on Arc (testnet)**: TBD (not yet officially released on public testnet)
 - **ElevenLabs Docs**: `https://elevenlabs.io/docs`
 
 ## Local Setup
@@ -19,7 +19,7 @@
 - [ ] `contracts/src/PaymentRouter.sol` compiled
 - [ ] `contracts/src/EscrowContract.sol` compiled
 - [ ] Deploy to Arc testnet (record addresses)
-- [ ] Verify on explorer
+- [ ] Verify on explorer (when Archiescan public)
 - [ ] Share addresses in `contracts/README.md`
 
 ## Frontend

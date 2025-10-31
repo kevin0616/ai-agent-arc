@@ -1,4 +1,11 @@
 import React from 'react'
+
+export default function ChatInterface() {
+  // Placeholder wrapper; ChatPage currently renders its own UI
+  return null
+}
+
+import React from 'react'
 import MessageBubble from "./MessageBubble";
 import QuickActions from "./QuickActions";
 import BalanceDisplay from "./BalanceDisplay";

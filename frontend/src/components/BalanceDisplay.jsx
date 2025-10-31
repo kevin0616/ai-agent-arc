@@ -1,5 +1,14 @@
 import React from 'react'
 
+export default function BalanceDisplay() {
+  // Placeholder: wire to USDC balance later
+  return (
+    <div className="text-sm opacity-70">USDC Balance: —</div>
+  )
+}
+
+import React from 'react'
+
 const BalanceDisplay = ({balance = "0.00"}) => {
   return (
     <>

@@ -1,18 +1,6 @@
 import { ethers } from 'ethers';
 import { ARC_NETWORK, USDC_ADDRESS } from '../config/networks';
-import USDC_ABI from '../abis/usdc.json'; // We'll create this next
-
-// USDC ABI (simplified with common functions)
-export const USDC_ABI = [
-  // ERC20 standard functions
-  'function balanceOf(address owner) view returns (uint256)',
-  'function transfer(address to, uint256 amount) returns (bool)',
-  'function transferFrom(address from, address to, uint256 amount) returns (bool)',
-  'function approve(address spender, uint256 amount) returns (bool)',
-  'function allowance(address owner, address spender) view returns (uint256)',
-  'event Transfer(address indexed from, address indexed to, uint256 value)',
-  'event Approval(address indexed owner, address indexed spender, uint256 value)'
-];
+import USDC_ABI from '../abis/usdc.json'; // Importing the ABI from JSON file
 
 // Initialize ethers provider
 export const getProvider = () => {

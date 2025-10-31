@@ -73,7 +73,7 @@ export const getTransactionHistory = async (address) => {
       args: {
         from: address,
         to: address,
-      } as any, // Type assertion to handle indexed args
+      }, // Removed TypeScript type assertion
       fromBlock: blockNumber - 10000n, // Last ~24 hours of blocks (adjust as needed)
       toBlock: 'latest',
     });

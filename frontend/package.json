@@ -14,12 +14,18 @@
     "@tailwindcss/vite": "^4.1.16",
     "@tanstack/react-query": "^5.90.5",
     "axios": "^1.13.0",
+    "ethers": "^5.7.2",
     "lucide-react": "^0.548.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-router-dom": "^7.9.4",
+<<<<<<< HEAD
     "viem": "^1.21.4",
     "wagmi": "^1.4.5",
+=======
+    "viem": "^2.38.5",
+    "wagmi": "^2.19.1",
+>>>>>>> 6fe733309962e8983b02cb3f0730b6397e947775
     "zustand": "^5.0.8"
   },
   "devDependencies": {

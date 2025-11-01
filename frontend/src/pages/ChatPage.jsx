@@ -5,6 +5,7 @@ import ChatInterface from "../components/ChatInterface";
 const ChatPage = () => {
   const [messages, setMessages] = useState([])
   const [recording, setRecording] = useState(false)
+  const [textInput, setTextInput] = useState('')
   const mediaRecorderRef = useRef(null)
   const audioChunksRef = useRef([])
 
@@ -42,12 +43,29 @@ const ChatPage = () => {
     setRecording(false)
   }
 
+  const sendText = async () => {
+    const content = textInput.trim()
+    if (!content) return
+    setMessages((m) => [...m, { role: 'user', content }])
+    setTextInput('')
+    // Here you would call your AI/backend to handle intent and execute
+    const reply = `You typed: ${content}`
+    setMessages((m) => [...m, { role: 'assistant', content: reply }])
+    try {
+      const url = await synthesizeSpeech(reply)
+      const audio = new Audio(url)
+      audio.play()
+    } catch (error) {
+      console.error('Error playing audio:', error)
+    }
+  }
+
   return (
     <>
     <ChatInterface />
     <div className="p-6 space-y-4">
       <div className="text-xl font-semibold">Voice-enabled Chat</div>
-      <div className="space-x-2">
+      <div className="space-x-2 items-center flex">
         {!recording ? (
           <button onClick={startRecording} className="px-3 py-2 bg-blue-600 text-white rounded">Start Mic</button>
         ) : (
@@ -62,6 +80,16 @@ const ChatPage = () => {
           </div>
         ))}
         {!messages.length && <div className="opacity-60">Speak a message to get started…</div>}
+      </div>
+      <div className="flex gap-2">
+        <input
+          className="flex-1 border rounded px-3 py-2"
+          placeholder="Type a message"
+          value={textInput}
+          onChange={(e) => setTextInput(e.target.value)}
+          onKeyDown={(e) => { if (e.key === 'Enter') sendText() }}
+        />
+        <button onClick={sendText} className="px-3 py-2 bg-green-600 text-white rounded">Send</button>
       </div>
     </div>
     </>

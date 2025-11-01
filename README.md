@@ -22,6 +22,10 @@ AI agents understand natural language and execute financial actions on Arc block
 1. **[CORRECT_HACKATHON.md](CORRECT_HACKATHON.md)** - Hackathon info
 2. **[ARC_HACKATHON_README.md](ARC_HACKATHON_README.md)** - Full project details
 3. **[TEAM_STRUCTURE.md](TEAM_STRUCTURE.md)** - Team roles (4 people)
+4. **[docs/HACKATHON_RESOURCES_CHECKLIST.md](docs/HACKATHON_RESOURCES_CHECKLIST.md)** - Arc RPC, explorer, USDC, demo checklist
+5. **[docs/CONNECT_CONTRACT_FRONTEND.md](docs/CONNECT_CONTRACT_FRONTEND.md)** - Frontend ↔ contracts (viem)
+6. **[docs/CONNECT_CONTRACT_BACKEND.md](docs/CONNECT_CONTRACT_BACKEND.md)** - Backend ↔ contracts (web3.py)
+7. **[docs/ELEVENLABS_INTEGRATION.md](docs/ELEVENLABS_INTEGRATION.md)** - Voice (ElevenLabs) setup & usage
 
 ---
 
@@ -54,7 +58,12 @@ git clone https://github.com/kevin0616/ai-agent-arc.git
 cd contracts
 
 # Person 2: Frontend
-cd frontend && yarn install
+cd frontend && npm install
+cp .env.local.example .env.local  # create if missing
+## Add your ElevenLabs API key:
+## VITE_ELEVENLABS_API_KEY=sk_...
+## VITE_ELEVENLABS_VOICE_ID=21m00Tcm4TlvDq8ikWAM
+npm run dev
 
 # Person 3: Backend
 cd backend && pip install -r requirements.txt

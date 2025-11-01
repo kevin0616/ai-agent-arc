@@ -1,0 +1,21 @@
+[
+  {
+    "type": "function",
+    "name": "sendPayment",
+    "stateMutability": "nonpayable",
+    "inputs": [
+      { "name": "recipient", "type": "address" },
+      { "name": "amount", "type": "uint256" },
+      { "name": "memo", "type": "string" }
+    ],
+    "outputs": []
+  },
+  {
+    "type": "function",
+    "name": "getUserSubscriptions",
+    "stateMutability": "view",
+    "inputs": [ { "name": "user", "type": "address" } ],
+    "outputs": [ { "type": "uint256[]" } ]
+  }
+]
+

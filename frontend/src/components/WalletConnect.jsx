@@ -24,8 +24,3 @@ export default function WalletConnect() {
   )
 }
 
-<<<<<<< HEAD
-export default WalletConnect
-
-=======
->>>>>>> 6fe733309962e8983b02cb3f0730b6397e947775

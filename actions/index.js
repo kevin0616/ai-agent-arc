@@ -22,14 +22,13 @@ app.use(cors({
 
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
 
-
 app.use(express.json());
 
 app.post('/create-wallet', async (req, res) => {
   const { username, password } = req.body;
-  
+
   try {
-  //create corresponding DCW wallet
+    //create corresponding DCW wallet
     const response = await client.createWallets({
       blockchains: ['ARC-TESTNET'],
       count: 1,
@@ -39,14 +38,14 @@ app.post('/create-wallet', async (req, res) => {
     const walletId = response.data.wallets[0].id
     const walletAddress = response.data.wallets[0].address
     //console.log(response.data.wallets)
-  //create account in db
+    //create account in db
     const { data, error } = await supabase
-    .from('Users')
-    .insert([
-    { walletAddress: walletAddress, walletId: walletId, username: username, password: password },
-    ])
-    .select()
-    
+      .from('Users')
+      .insert([
+        { walletAddress: walletAddress, walletId: walletId, username: username, password: password },
+      ])
+      .select()
+
     if (error) return res.status(500).json({ error: error.message });
 
     if (data.length > 0) {
@@ -60,7 +59,7 @@ app.post('/create-wallet', async (req, res) => {
 });
 
 app.post('/login', async (req, res) => {
-  const {username, password} = req.body
+  const { username, password } = req.body
   console.log(username, password)
   try {
     const { data, error } = await supabase
@@ -69,10 +68,10 @@ app.post('/login', async (req, res) => {
       .eq('username', username)
       .eq('password', password)
       .single()
-    
+
     if (error) return res.status(500).json({ error: error.message });
     if (data) {
-      res.json({ results: true, walletId: data.walletId , walletAddress: data.walletAddress});
+      res.json({ results: true, walletId: data.walletId, walletAddress: data.walletAddress });
     } else {
       res.json({ results: false });
     }
@@ -88,10 +87,10 @@ app.post('/balance', async (req, res) => {
       id: walletId
     });
     console.log(response.data.tokenBalances)
-    if (response.data.tokenBalances.length == 0){
+    if (response.data.tokenBalances.length == 0) {
       res.json(0)
     }
-    else{
+    else {
       res.json(response.data.tokenBalances[0].amount);
     }
   } catch (err) {
@@ -106,7 +105,7 @@ app.post('/transactions', async (req, res) => {
       walletIds: [walletId]
     });
     res.json(response.data);
-      
+
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -158,7 +157,7 @@ app.post("/sell-usdc", async (req, res) => {
 });
 
 app.listen(port, () => {
-    console.log(`Server running on http://localhost:${port}`);
+  console.log(`Server running on http://localhost:${port}`);
 });
 
 

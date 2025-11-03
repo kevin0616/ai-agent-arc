@@ -8,7 +8,6 @@ const ChatPage = () => {
   const [textInput, setTextInput] = useState('')
   const mediaRecorderRef = useRef(null)
   const audioChunksRef = useRef([])
-
   const startRecording = async () => {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
     const mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' })

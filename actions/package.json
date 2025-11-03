@@ -13,6 +13,8 @@
     "@circle-fin/adapter-viem-v2": "^1.0.1",
     "@circle-fin/bridge-kit": "^1.1.0",
     "@circle-fin/developer-controlled-wallets": "^9.2.0",
+    "@supabase/supabase-js": "^2.78.0",
+    "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "tsx": "^4.20.6",

@@ -24,7 +24,6 @@ const WalletPage = () => {
     const fetchBalance = async () => {
       try {
         const res = await axios.post('http://localhost:3000/balance', {walletId})
-        console.log('Balance Result:', res.data)
         setBalance(res.data)
       } catch (err) {
         console.error('Error:', err.response?.data || err.message);

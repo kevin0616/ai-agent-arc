@@ -71,7 +71,7 @@ app.post('/login', async (req, res) => {
 
     if (error) return res.status(500).json({ error: error.message });
     if (data) {
-      res.json({ results: true, walletId: data.walletId, walletAddress: data.walletAddress });
+      res.json({ results: true, walletId: data.walletId, walletAddress: data.walletAddress, username: username });
     } else {
       res.json({ results: false });
     }

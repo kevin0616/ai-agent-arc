@@ -30,7 +30,8 @@ const TransactionCard = ({tx}) => {
     <div className="bg-white p-4 rounded-xl shadow-sm border flex justify-between items-center">
       <div>
         <p className="text-base font-semibold text-body">
-          {tx.type === "pay" ? "💸 Payment" : "💼 Escrow"} • <span className="text-sm text-gray-500">{tx.recipient}</span>
+          {/* {tx.type === "pay" ? "💸 Payment" : "💼 Escrow"} • <span className="text-sm text-gray-500">{tx.recipient}</span> */}
+          {tx.type === "INBOUND" ? "💸 Receive" : "💸 Send"} • <span className="text-sm text-gray-500">{tx.recipient}</span>
         </p>
         <p className="text-sm text-gray-400 mt-1">{tx.timestamp}</p>
       </div>

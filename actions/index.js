@@ -1,6 +1,5 @@
 const {
   initiateDeveloperControlledWalletsClient,
-  CreateTransferTransactionForDeveloperRequest,
 } = require("@circle-fin/developer-controlled-wallets");
 require('dotenv').config();
 const express = require('express');
@@ -13,32 +12,49 @@ const client = initiateDeveloperControlledWalletsClient({
 const app = express();
 const port = 3000;
 
-app.get('/balance', async (req, res) => {
-    try {
-        const response = await client.getWalletTokenBalance({
-            id: 'b89e6292-6c33-5264-bbcd-af3b86e33060'
-        });
-        res.json(response.data.tokenBalances);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
+app.use(express.json());
 
 app.get('/create-wallet', async (req, res) => {
-    try {
-        const response = await client.createWallets({
-            blockchains: ['ARC-TESTNET'],
-            count: 1,
-            accountType: 'SCA',
-            walletSetId: process.env.WALLET_SET_ID
-        });
-        res.json(response.data.wallets);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
+  try {
+    const response = await client.createWallets({
+      blockchains: ['ARC-TESTNET'],
+      count: 1,
+      accountType: 'SCA',
+      walletSetId: process.env.WALLET_SET_ID
+    });
+    res.json(response.data.wallets);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post('/balance', async (req, res) => {
+  const { walletId } = req.body
+  try {
+    const response = await client.getWalletTokenBalance({
+      id: walletId
+    });
+    res.json(response.data.tokenBalances[0].amount);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post('/transactions', async (req, res) => {
+  const { walletId } = req.body
+  try {
+    const response = await client.listTransactions({
+      walletIds: [walletId]
+    });
+    res.json(response.data);
+      
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 app.get("/buy-usdc", async (req, res) => {
+  const { walletAddress, amount } = req.body
   try {
     const response = await client.createTransaction({
       walletId: 'b89e6292-6c33-5264-bbcd-af3b86e33060', // id from (DEX SIMULATE)
@@ -52,12 +68,15 @@ app.get("/buy-usdc", async (req, res) => {
         }
       }
     });
+    console.log(response.data)
+
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
 app.get("/sell-usdc", async (req, res) => {
+  const { walletId, amount } = req.body
   try {
     const response = await client.createTransaction({
       walletId: '0f3c02e1-68be-5687-a550-4305e9c0ae30', // id from (MYWALLET)
@@ -71,6 +90,8 @@ app.get("/sell-usdc", async (req, res) => {
         }
       }
     });
+    console.log(response.data)
+
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

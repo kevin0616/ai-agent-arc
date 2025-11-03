@@ -3,7 +3,7 @@ import React from 'react'
 const TransactionCard = ({tx}) => {
 
   const statusMap = {
-    success: { text: "Success", color: "text-success" },
+    COMPLETE: { text: "Success", color: "text-success" },
     pending: { text: "Pending", color: "text-warning" },
     failed:  { text: "Failed",  color: "text-danger" },
   };

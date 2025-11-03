@@ -1,9 +1,12 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import AuthInput from "../components/AuthInput";
 import AuthButton from "../components/AuthButton";
+import axios from 'axios';
 
 export default function Register() {
-  const [form, setForm] = useState({ name: "", email: "", password: "" });
+  const [form, setForm] = useState({ username: "", password: "" });
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -12,6 +15,13 @@ export default function Register() {
   const handleRegister = async () => {
     console.log("Registering user:", form);
     // TODO: Connect to backend API (next step)
+    try {
+      const res = await axios.post('http://localhost:3000/create-wallet', {username: form.username, password: form.password})
+      console.log('Result:', res.data)
+      navigate("/login")
+    } catch (err) {
+      console.error('Error:', err.response?.data || err.message);
+    }
   };
 
   return (
@@ -19,7 +29,7 @@ export default function Register() {
       <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md">
         <h2 className="text-2xl font-semibold text-center text-gray-800 mb-6">
             Create Account</h2>
-        <AuthInput
+        {/*<AuthInput
           label="Full Name"
           name="name"
           type="text"
@@ -33,6 +43,14 @@ export default function Register() {
           type="email"
           placeholder="you@example.com"
           value={form.email}
+          onChange={handleChange}
+        />*/}
+        <AuthInput
+          label="Username"
+          name="username"
+          type="username"
+          placeholder=""
+          value={form.username}
           onChange={handleChange}
         />
         <AuthInput

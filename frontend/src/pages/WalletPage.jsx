@@ -3,26 +3,32 @@ import { useAccount } from 'wagmi';
 import { Link } from 'react-router-dom';
 import WalletConnect from '../components/WalletConnect';
 import { getUsdcBalance } from '../utils/walletUtils';
+import axios from 'axios';
 
 const WalletPage = () => {
-  const { address, isConnected } = useAccount();
+  //const { address, isConnected } = useAccount();
+  const user = JSON.parse(localStorage.getItem('user'));
+  const isConnected = user.results
+  const walletId = user.walletId
+  const walletAddress = user.walletAddress
   const [balance, setBalance] = useState('0');
   const [isLoading, setIsLoading] = useState(true);
 
   // Fetch balance when address changes
   useEffect(() => {
-    if (!address) {
+    /*if (!address) {
       setIsLoading(false);
       return;
-    }
+    }*/
     
     const fetchBalance = async () => {
       try {
-        const bal = await getUsdcBalance(address);
-        setBalance(bal);
-      } catch (error) {
-        console.error('Error fetching balance:', error);
-      } finally {
+        const res = await axios.post('http://localhost:3000/balance', {walletId})
+        console.log('Balance Result:', res.data)
+        setBalance(res.data)
+      } catch (err) {
+        console.error('Error:', err.response?.data || err.message);
+      }finally {
         setIsLoading(false);
       }
     };
@@ -32,14 +38,14 @@ const WalletPage = () => {
     // Refresh every 30 seconds
     const interval = setInterval(fetchBalance, 30000);
     return () => clearInterval(interval);
-  }, [address]);
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-50 p-4">
       <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-sm p-6">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold text-gray-900">PayFlow Wallet</h1>
-          <WalletConnect />
+          {/*<WalletConnect />*/}
         </div>
         
         {isConnected ? (
@@ -55,7 +61,7 @@ const WalletPage = () => {
               </div>
               <div className="mt-4">
                 <p className="text-sm text-gray-500">
-                  Wallet: {`${address.slice(0, 6)}...${address.slice(-4)}`}
+                  Wallet: {walletAddress}
                 </p>
               </div>
             </div>
@@ -88,8 +94,9 @@ const WalletPage = () => {
           </div>
         ) : (
           <div className="text-center py-12">
-            <p className="text-gray-600 mb-4">Connect your wallet to view your balance and transactions</p>
-            <WalletConnect />
+            {/*<p className="text-gray-600 mb-4">Connect your wallet to view your balance and transactions</p>*/}
+            <p className="text-gray-600 mb-4">Login to view your balance and transactions</p>
+            {/*<WalletConnect />*/}
           </div>
         )}
       </div>

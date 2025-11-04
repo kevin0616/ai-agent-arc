@@ -20,6 +20,7 @@ export default function Login() {
       console.log('Result:', res.data)
       localStorage.setItem('user', JSON.stringify(res.data));
       navigate("/")
+      window.location.reload()
     } catch (err) {
       console.error('Error:', err.response?.data || err.message);
     }

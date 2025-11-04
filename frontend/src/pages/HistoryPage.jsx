@@ -26,12 +26,11 @@ const HistoryPage = () => {
         //console.log('Result:', res.data.transactions)
         const transactions = res.data.transactions
         const txAmounts = transactions.map(tx => ({
-          type: tx.operation,
+          type: tx.transactionType,
           amount: tx.amounts[0],
           status: tx.state,
           timestamp: new Date(tx.createDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }),
         }))
-        console.log(txAmounts)
         setTXs(txAmounts)
       } catch (err) {
         console.error('Error:', err.response?.data || err.message);
@@ -39,7 +38,6 @@ const HistoryPage = () => {
         setIsLoading(false);
       }
     };
-
     fetchTXs();
   }, []);
 

@@ -7,13 +7,25 @@ import axios from 'axios';
 
 const WalletPage = () => {
   //const { address, isConnected } = useAccount();
-  const user = JSON.parse(localStorage.getItem('user'));
+  const user = JSON.parse(localStorage.getItem('user'))
   const isConnected = user.results
   const walletId = user.walletId
   const walletAddress = user.walletAddress
-  const [balance, setBalance] = useState('0');
-  const [isLoading, setIsLoading] = useState(true);
+  const [balance, setBalance] = useState('0')
+  const [isLoading, setIsLoading] = useState(true)
+  const [message, setMessage] = useState(null)
+  const [messageType, setMessageType] = useState(null)
 
+  useEffect(() => {
+    if (message) {
+    const timer = setTimeout(() => {
+    setMessage(null);
+    setMessageType(null);
+    }, 3000);
+    return () => clearTimeout(timer);
+    }
+  }, [message])
+      
   // Fetch balance when address changes
   useEffect(() => {
     /*if (!address) {
@@ -24,7 +36,6 @@ const WalletPage = () => {
     const fetchBalance = async () => {
       try {
         const res = await axios.post('http://localhost:3000/balance', {walletId})
-        console.log('Balance Result:', res.data)
         setBalance(res.data)
       } catch (err) {
         console.error('Error:', err.response?.data || err.message);
@@ -40,6 +51,34 @@ const WalletPage = () => {
     return () => clearInterval(interval);
   }, []);
 
+  const buy = async() => {
+    try {
+      const amount = '2'
+      const res = await axios.post('http://localhost:3000/buy-usdc', {walletAddress, amount})
+      console.log('Result:', res.data)
+      setMessage('Receive Successful!')
+      setMessageType('success')
+    } catch (err) {
+      console.error('Error:', err.response?.data || err.message);
+      setMessage('Receive Failed!')
+      setMessageType('error')
+    }
+  }
+
+  const sell = async() => {
+    try {
+      const amount = '25'
+      const res = await axios.post('http://localhost:3000/sell-usdc', {walletId, amount})
+      console.log('Result:', res.data)
+      setMessage('Send Successful!')
+      setMessageType('success')
+    } catch (err) {
+      console.error('Error:', err.response?.data || err.message);
+      setMessage('Send Failed!')
+      setMessageType('error')
+    }
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 p-4">
       <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-sm p-6">
@@ -47,7 +86,11 @@ const WalletPage = () => {
           <h1 className="text-2xl font-bold text-gray-900">PayFlow Wallet</h1>
           {/*<WalletConnect />*/}
         </div>
-        
+        {message && (
+        <div className={`p-3 mb-4 rounded-lg text-white ${messageType === 'success' ? 'bg-green-600' : 'bg-red-600'}`}>
+        {message}
+        </div>
+        )}
         {isConnected ? (
           <div className="space-y-6">
             {/* Balance Card */}
@@ -70,13 +113,13 @@ const WalletPage = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <button
                 className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg text-center transition-colors"
-                onClick={() => alert('Send functionality coming soon')}
+                onClick={() => sell()}
               >
                 Send
               </button>
               <button
                 className="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-medium py-3 px-4 rounded-lg transition-colors"
-                onClick={() => alert('Receive functionality coming soon')}
+                onClick={() => buy()}
               >
                 Receive
               </button>

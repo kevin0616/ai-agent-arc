@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import { synthesizeSpeech, transcribeAudioBlob } from '../lib/elevenlabsClient'
 import ChatInterface from "../components/ChatInterface";
 
@@ -8,33 +8,75 @@ const ChatPage = () => {
   const [textInput, setTextInput] = useState('')
   const mediaRecorderRef = useRef(null)
   const audioChunksRef = useRef([])
-  const startRecording = async () => {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
-    const mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' })
-    mediaRecorderRef.current = mediaRecorder
-    audioChunksRef.current = []
-    mediaRecorder.ondataavailable = (e) => {
-      if (e.data.size > 0) audioChunksRef.current.push(e.data)
+
+  useEffect(() => {
+    // Check if ElevenLabs API key is loaded
+    const apiKey = import.meta.env.VITE_ELEVENLABS_API_KEY
+    if (apiKey) {
+      console.log('✅ ElevenLabs API Key loaded:', apiKey.substring(0, 15) + '...' + apiKey.substring(apiKey.length - 4))
+      console.log('📏 Key length:', apiKey.length, 'characters')
+    } else {
+      console.error('❌ ElevenLabs API Key NOT loaded! Check your .env file')
+      alert('Warning: ElevenLabs API Key not found. Voice features may not work.')
     }
-    mediaRecorder.onstop = async () => {
-      const blob = new Blob(audioChunksRef.current, { type: 'audio/webm' })
-      const text = await transcribeAudioBlob(blob)
-      if (text) {
-        setMessages((m) => [...m, { role: 'user', content: text }])
-        // Here you would call your AI/backend to handle intent and execute
-        const reply = `Heard: ${text}`
-        setMessages((m) => [...m, { role: 'assistant', content: reply }])
-        try {
-          const url = await synthesizeSpeech(reply)
-          const audio = new Audio(url)
-          audio.play()
-        } catch (error) {
-          console.error("Error playing audio:", error)
+  }, [])
+  const startRecording = async () => {
+    try {
+      console.log('🎤 Requesting microphone access...')
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+      console.log('✅ Microphone access granted')
+      
+      const mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' })
+      mediaRecorderRef.current = mediaRecorder
+      audioChunksRef.current = []
+      
+      mediaRecorder.ondataavailable = (e) => {
+        if (e.data.size > 0) {
+          console.log('📊 Audio data received:', e.data.size, 'bytes')
+          audioChunksRef.current.push(e.data)
         }
       }
+      
+      mediaRecorder.onstop = async () => {
+        console.log('🛑 Recording stopped')
+        const blob = new Blob(audioChunksRef.current, { type: 'audio/webm' })
+        console.log('📦 Audio blob size:', blob.size, 'bytes')
+        
+        try {
+          console.log('🔄 Transcribing audio...')
+          const text = await transcribeAudioBlob(blob)
+          console.log('📝 Transcription result:', text)
+          
+          if (text) {
+            setMessages((m) => [...m, { role: 'user', content: text }])
+            // Here you would call your AI/backend to handle intent and execute
+            const reply = `Heard: ${text}`
+            setMessages((m) => [...m, { role: 'assistant', content: reply }])
+            
+            try {
+              console.log('🔊 Synthesizing speech...')
+              const url = await synthesizeSpeech(reply)
+              console.log('✅ Speech synthesized:', url)
+              const audio = new Audio(url)
+              audio.play()
+            } catch (error) {
+              console.error("❌ Error playing audio:", error)
+              alert('Error playing audio: ' + error.message)
+            }
+          }
+        } catch (error) {
+          console.error('❌ Error transcribing audio:', error)
+          alert('Error transcribing audio: ' + error.message)
+        }
+      }
+      
+      mediaRecorder.start()
+      setRecording(true)
+      console.log('🔴 Recording started')
+    } catch (error) {
+      console.error('❌ Error accessing microphone:', error)
+      alert('Microphone access denied or not available. Please allow microphone permission and try again.')
     }
-    mediaRecorder.start()
-    setRecording(true)
   }
 
   const stopRecording = () => {
@@ -45,17 +87,24 @@ const ChatPage = () => {
   const sendText = async () => {
     const content = textInput.trim()
     if (!content) return
+    
+    console.log('📤 Sending text:', content)
     setMessages((m) => [...m, { role: 'user', content }])
     setTextInput('')
+    
     // Here you would call your AI/backend to handle intent and execute
     const reply = `You typed: ${content}`
     setMessages((m) => [...m, { role: 'assistant', content: reply }])
+    
     try {
+      console.log('🔊 Synthesizing text reply...')
       const url = await synthesizeSpeech(reply)
+      console.log('✅ Speech synthesized:', url)
       const audio = new Audio(url)
       audio.play()
     } catch (error) {
-      console.error('Error playing audio:', error)
+      console.error('❌ Error with text-to-speech:', error)
+      alert('Error with text-to-speech: ' + error.message)
     }
   }
 

@@ -82,11 +82,17 @@ app.post('/login', async (req, res) => {
 
 app.post('/balance', async (req, res) => {
   const { walletId } = req.body
+  console.log('📊 Balance request for walletId:', walletId)
+  
+  if (!walletId) {
+    return res.status(400).json({ error: 'walletId is required' });
+  }
+  
   try {
     const response = await client.getWalletTokenBalance({
       id: walletId
     });
-    console.log(response.data.tokenBalances)
+    console.log('✅ Balance response:', response.data.tokenBalances)
     if (response.data.tokenBalances.length == 0) {
       res.json(0)
     }
@@ -94,6 +100,7 @@ app.post('/balance', async (req, res) => {
       res.json(response.data.tokenBalances[0].amount);
     }
   } catch (err) {
+    console.error('❌ Balance error:', err.message)
     res.status(500).json({ error: err.message });
   }
 });
@@ -114,20 +121,20 @@ app.post('/transactions', async (req, res) => {
 app.post("/buy-usdc", async (req, res) => {
   const { walletAddress, amount } = req.body
   try {
-    const response = await client.createTransaction({
-      walletId: 'b89e6292-6c33-5264-bbcd-af3b86e33060', // id from (DEX SIMULATE)
-      tokenId: '15dc2b5d-0994-58b0-bf8c-3a0501148ee8', //usdc token id
-      destinationAddress: walletAddress, //address to (MYWALLET)
-      amounts: [amount],
-      fee: {
-        type: 'level',
-        config: {
-          feeLevel: 'HIGH'
-        }
-      }
-    });
-    console.log(response.data)
-    res.json(response.data)
+    // For hackathon demo: Simulate getting USDC from faucet
+    // In production, this would be a real DEX wallet transferring USDC
+    
+    // NOTE: This will fail if you don't have a funded DEX wallet
+    // Alternative: Use Arc testnet faucet to fund wallets directly:
+    // https://faucet.arc.xyz or similar testnet faucet
+    
+    res.json({ 
+      message: "For demo: Use Arc testnet faucet to fund your wallet",
+      faucetUrl: "https://faucet.arc.xyz",
+      walletAddress: walletAddress,
+      requestedAmount: amount,
+      note: "Get free test USDC from the faucet and it will show in your balance and transaction history"
+    })
 
   } catch (err) {
     res.status(500).json({ error: err.message });

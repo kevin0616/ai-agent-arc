@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react'
 import { synthesizeSpeech, transcribeAudioBlob } from '../lib/elevenlabsClient'
 import ChatInterface from "../components/ChatInterface";
+import axios from 'axios';
 
 const ChatPage = () => {
   const [messages, setMessages] = useState([])
@@ -8,6 +9,62 @@ const ChatPage = () => {
   const [textInput, setTextInput] = useState('')
   const mediaRecorderRef = useRef(null)
   const audioChunksRef = useRef([])
+
+  // Process user command and call backend
+  const processCommand = async (userText) => {
+    const text = userText.toLowerCase();
+    
+    // Get user data from localStorage
+    const userData = JSON.parse(localStorage.getItem('user') || '{}');
+    const walletId = userData.walletId;
+    const walletAddress = userData.walletAddress; // Fixed: was userData.address
+
+    console.log('👤 User data:', { walletId, walletAddress, fullData: userData });
+
+    try {
+      // Check balance command
+      if (text.includes('balance') || text.includes('how much')) {
+        if (!walletId) {
+          return "Please login first to check your balance.";
+        }
+        const response = await axios.post('http://localhost:3000/balance', { walletId });
+        const balance = response.data || '0';
+        return `Your wallet balance is ${balance} USDC on the Arc network.`;
+      }
+      
+      // Check wallet address
+      if (text.includes('wallet address') || text.includes('my address')) {
+        if (!walletAddress) {
+          return "Please login first to see your wallet address.";
+        }
+        return `Your wallet address is ${walletAddress}`;
+      }
+      
+      // Check transactions
+      if (text.includes('transaction') || text.includes('history')) {
+        if (!walletId) {
+          return "Please login first to view transactions.";
+        }
+        const response = await axios.post('http://localhost:3000/transactions', { walletId });
+        const txCount = response.data.transactions?.length || 0;
+        return `You have ${txCount} transactions in your history.`;
+      }
+      
+      // Send/transfer commands
+      if (text.includes('send') || text.includes('transfer')) {
+        return "To send USDC, please use the wallet page or specify the amount and recipient address.";
+      }
+      
+      // Default response
+      return `I heard: "${userText}". I can help you check your balance, view transactions, or send USDC. Try saying "what's my balance" or "show my transactions".`;
+      
+    } catch (error) {
+      console.error('Error processing command:', error);
+      console.error('Error details:', error.response?.data);
+      const errorMsg = error.response?.data?.error || error.message;
+      return `Sorry, I encountered an error: ${errorMsg}. Please make sure you're logged in and try again.`;
+    }
+  }
 
   useEffect(() => {
     // Check if ElevenLabs API key is loaded
@@ -49,8 +106,10 @@ const ChatPage = () => {
           
           if (text) {
             setMessages((m) => [...m, { role: 'user', content: text }])
-            // Here you would call your AI/backend to handle intent and execute
-            const reply = `Heard: ${text}`
+            
+            // Process the command and get AI response
+            console.log('🤖 Processing command...')
+            const reply = await processCommand(text)
             setMessages((m) => [...m, { role: 'assistant', content: reply }])
             
             try {
@@ -92,8 +151,9 @@ const ChatPage = () => {
     setMessages((m) => [...m, { role: 'user', content }])
     setTextInput('')
     
-    // Here you would call your AI/backend to handle intent and execute
-    const reply = `You typed: ${content}`
+    // Process the command and get AI response
+    console.log('🤖 Processing command...')
+    const reply = await processCommand(content)
     setMessages((m) => [...m, { role: 'assistant', content: reply }])
     
     try {

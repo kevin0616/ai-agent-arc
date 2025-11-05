@@ -50,9 +50,74 @@ const ChatPage = () => {
         return `You have ${txCount} transactions in your history.`;
       }
       
-      // Send/transfer commands
-      if (text.includes('send') || text.includes('transfer')) {
-        return "To send USDC, please use the wallet page or specify the amount and recipient address.";
+      // Send/transfer commands - Parse natural language
+      if (text.includes('send') || text.includes('pay') || text.includes('transfer')) {
+        if (!walletId) {
+          return "Please login first to send USDC.";
+        }
+        
+        // Parse amount from command (e.g., "send 10 USDC" or "pay 5 to bob")
+        const amountMatch = text.match(/(\d+\.?\d*)\s*(usdc|dollars?)?/i);
+        
+        // Parse recipient - check if they mentioned a username
+        let recipientAddress = null;
+        let recipientName = null;
+        
+        // Check for common names (alice, bob, merchant, etc.)
+        if (text.includes('alice')) {
+          recipientName = 'alice';
+        } else if (text.includes('bob')) {
+          recipientName = 'bob';
+        } else if (text.includes('merchant')) {
+          recipientName = 'merchant';
+        }
+        
+        // Parse ethereum address if provided (0x...)
+        const addressMatch = text.match(/(0x[a-fA-F0-9]{40})/);
+        if (addressMatch) {
+          recipientAddress = addressMatch[1];
+        }
+        
+        if (!amountMatch) {
+          return "Please specify an amount. For example: 'Send 10 USDC to Bob' or 'Pay 5 dollars to alice'";
+        }
+        
+        const amount = amountMatch[1];
+        
+        // If we have a recipient name, get their address from backend
+        if (recipientName && !recipientAddress) {
+          try {
+            const loginResponse = await axios.post('http://localhost:3000/login', {
+              username: recipientName,
+              password: recipientName + '123' // Standard pattern for demo accounts
+            });
+            recipientAddress = loginResponse.data.walletAddress;
+          } catch (error) {
+            return `I couldn't find ${recipientName}'s wallet address. Please provide a wallet address starting with 0x...`;
+          }
+        }
+        
+        if (!recipientAddress) {
+          return `Please specify a recipient. Say: "Send ${amount} USDC to Bob" or provide a wallet address.`;
+        }
+        
+        // Execute the transaction!
+        try {
+          const response = await axios.post('http://localhost:3000/sell-usdc', {
+            walletId: walletId,
+            amount: amount,
+            destinationAddress: recipientAddress
+          });
+          
+          const recipientDisplay = recipientName || recipientAddress.substring(0, 10) + '...';
+          return `Successfully sent ${amount} USDC to ${recipientDisplay}! Transaction ID: ${response.data.id || 'pending'}. Check your transaction history to see the details.`;
+        } catch (error) {
+          const errorMsg = error.response?.data?.error || error.message;
+          if (errorMsg.includes('insufficient')) {
+            return `Insufficient balance. You need ${amount} USDC in your wallet. Please fund your wallet first using the Arc testnet faucet.`;
+          }
+          return `Transaction failed: ${errorMsg}. Make sure your wallet has enough USDC.`;
+        }
       }
       
       // Default response

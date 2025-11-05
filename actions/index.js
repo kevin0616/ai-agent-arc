@@ -142,12 +142,21 @@ app.post("/buy-usdc", async (req, res) => {
 });
 
 app.post("/sell-usdc", async (req, res) => {
-  const { walletId, amount } = req.body
+  const { walletId, amount, destinationAddress } = req.body
+  console.log('💸 Send USDC request:', { walletId, amount, destinationAddress })
+  
+  if (!walletId || !amount) {
+    return res.status(400).json({ error: 'walletId and amount are required' });
+  }
+  
+  // Use provided destination or default to DEX simulate address
+  const recipient = destinationAddress || '0xf37a740f4c3f7afd7269cec210525f85cb03e57a';
+  
   try {
     const response = await client.createTransaction({
-      walletId: walletId, // id from (MYWALLET)
-      tokenId: '15dc2b5d-0994-58b0-bf8c-3a0501148ee8', //usdc token id
-      destinationAddress: '0xf37a740f4c3f7afd7269cec210525f85cb03e57a', //address to (DEX SIMULATE)
+      walletId: walletId, // Sender wallet
+      tokenId: '15dc2b5d-0994-58b0-bf8c-3a0501148ee8', // USDC token on Arc
+      destinationAddress: recipient, // Recipient address
       amounts: [amount],
       fee: {
         type: 'level',
@@ -156,9 +165,10 @@ app.post("/sell-usdc", async (req, res) => {
         }
       }
     });
-    console.log(response.data)
+    console.log('✅ Transaction created:', response.data)
     res.json(response.data)
   } catch (err) {
+    console.error('❌ Transaction error:', err.message)
     res.status(500).json({ error: err.message });
   }
 });

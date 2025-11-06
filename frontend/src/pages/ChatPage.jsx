@@ -178,14 +178,14 @@ const ChatPage = () => {
             setMessages((m) => [...m, { role: 'assistant', content: reply }])
             
             try {
-              console.log('🔊 Synthesizing speech...')
+              console.log('🔊 Attempting to synthesize speech...')
               const url = await synthesizeSpeech(reply)
               console.log('✅ Speech synthesized:', url)
               const audio = new Audio(url)
               audio.play()
             } catch (error) {
-              console.error("❌ Error playing audio:", error)
-              alert('Error playing audio: ' + error.message)
+              console.warn("⚠️ Voice output unavailable (ElevenLabs limit reached), continuing with text only:", error.message)
+              // Continue without voice - core functionality still works!
             }
           }
         } catch (error) {
@@ -222,14 +222,14 @@ const ChatPage = () => {
     setMessages((m) => [...m, { role: 'assistant', content: reply }])
     
     try {
-      console.log('🔊 Synthesizing text reply...')
+      console.log('🔊 Attempting to synthesize text reply...')
       const url = await synthesizeSpeech(reply)
       console.log('✅ Speech synthesized:', url)
       const audio = new Audio(url)
       audio.play()
     } catch (error) {
-      console.error('❌ Error with text-to-speech:', error)
-      alert('Error with text-to-speech: ' + error.message)
+      console.warn('⚠️ Voice output unavailable (ElevenLabs limit reached), continuing with text only:', error.message)
+      // Continue without voice - core functionality still works!
     }
   }
 

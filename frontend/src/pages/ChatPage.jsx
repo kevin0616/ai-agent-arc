@@ -22,8 +22,15 @@ const ChatPage = () => {
     console.log('👤 User data:', { walletId, walletAddress, fullData: userData });
 
     try {
-      // Check balance command
-      if (text.includes('balance') || text.includes('how much')) {
+      // Help command
+      if (text.includes('help') || text.includes('commands') || text.includes('what can you do')) {
+        return `I'm PayFlow AI - your blockchain payment assistant! Here's what I can do:\n\n💰 CHECK BALANCE\n"What's my balance?"\n"How much USDC do I have?"\n\n📍 WALLET INFO\n"What's my wallet address?"\n"Show my wallet ID"\n\n💸 SEND USDC\n"Send 10 USDC to Bob"\n"Pay 5 dollars to Alice"\n"Transfer 20 to merchant"\n\n📊 TRANSACTION HISTORY\n"Show my transactions"\n"Transaction history"\n\nAll transactions are real and executed on Arc testnet blockchain!`;
+      }
+      
+      // Check balance command - handle many variations
+      if (text.includes('balance') || text.includes('how much') || 
+          (text.includes('money') || text.includes('funds') || text.includes('usdc')) && 
+          (text.includes('have') || text.includes('got') || text.includes('do i'))) {
         if (!walletId) {
           return "Please login first to check your balance.";
         }
@@ -32,12 +39,12 @@ const ChatPage = () => {
         return `Your wallet balance is ${balance} USDC on the Arc network.`;
       }
       
-      // Check wallet address
-      if (text.includes('wallet address') || text.includes('my address')) {
+      // Check wallet address or ID
+      if (text.includes('wallet') && (text.includes('address') || text.includes('id') || text.includes('what') || text.includes('show'))) {
         if (!walletAddress) {
-          return "Please login first to see your wallet address.";
+          return "Please login first to see your wallet information.";
         }
-        return `Your wallet address is ${walletAddress}`;
+        return `Your wallet address is: ${walletAddress}\n\nWallet ID: ${walletId}`;
       }
       
       // Check transactions
@@ -120,8 +127,8 @@ const ChatPage = () => {
         }
       }
       
-      // Default response
-      return `I heard: "${userText}". I can help you check your balance, view transactions, or send USDC. Try saying "what's my balance" or "show my transactions".`;
+      // Default response - be helpful!
+      return `I can help you with:\n\n💰 Check Balance: "What's my balance?" or "How much money do I have?"\n\n📍 Wallet Info: "What's my wallet address?" or "Show my wallet ID"\n\n💸 Send USDC: "Send 10 USDC to Bob" or "Pay 5 to Alice"\n\n📊 History: "Show my transactions" or "Transaction history"\n\nTry one of these commands!`;
       
     } catch (error) {
       console.error('Error processing command:', error);

@@ -15,6 +15,9 @@ const WalletPage = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [message, setMessage] = useState(null)
   const [messageType, setMessageType] = useState(null)
+  const [amount, setAmount] = useState('')
+  const [transferAddress, setTransferAddress] = useState('')
+  const [transferAmount, setTransferAmount] = useState('')
 
   useEffect(() => {
     if (message) {
@@ -52,29 +55,55 @@ const WalletPage = () => {
   }, []);
 
   const buy = async() => {
+    if (!amount || isNaN(amount) || Number(amount) <= 0) {
+      setMessage('Please enter a valid amount!')
+      setMessageType('error')
+      return
+    }
     try {
-      const amount = '2'
       const res = await axios.post('http://localhost:3000/buy-usdc', {walletAddress, amount})
       console.log('Result:', res.data)
-      setMessage('Receive Successful!')
+      setMessage('Buy Successful!')
       setMessageType('success')
     } catch (err) {
       console.error('Error:', err.response?.data || err.message);
-      setMessage('Receive Failed!')
+      setMessage('Buy Failed!')
       setMessageType('error')
     }
   }
 
   const sell = async() => {
+    if (!amount || isNaN(amount) || Number(amount) <= 0) {
+      setMessage('Please enter a valid amount!')
+      setMessageType('error')
+      return
+    }
     try {
-      const amount = '25'
       const res = await axios.post('http://localhost:3000/sell-usdc', {walletId, amount})
       console.log('Result:', res.data)
-      setMessage('Send Successful!')
+      setMessage('Sell Successful!')
       setMessageType('success')
     } catch (err) {
       console.error('Error:', err.response?.data || err.message);
-      setMessage('Send Failed!')
+      setMessage('Sell Failed!')
+      setMessageType('error')
+    }
+  }
+
+  const transfer = async() => {
+    if (!transferAmount || isNaN(transferAmount) || Number(transferAmount) <= 0) {
+      setMessage('Please enter a valid amount!')
+      setMessageType('error')
+      return
+    }
+    try {
+      const res = await axios.post('http://localhost:3000/send', {walletId, transferAmount, transferAddress})
+      console.log('Result:', res.data)
+      setMessage('Transfer Successful!')
+      setMessageType('success')
+    } catch (err) {
+      console.error('Error:', err.response?.data || err.message);
+      setMessage('Transfer Failed!')
       setMessageType('error')
     }
   }
@@ -111,28 +140,58 @@ const WalletPage = () => {
 
             {/* Actions */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <input
+                type="number"
+                placeholder="Enter amount"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                className="w-full col-span-2 border border-gray-300 rounded-lg px-4 py-3 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
               <button
                 className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg text-center transition-colors"
                 onClick={() => sell()}
               >
-                Send
+                Sell
               </button>
               <button
                 className="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-medium py-3 px-4 rounded-lg transition-colors"
                 onClick={() => buy()}
               >
-                Receive
+                Buy
               </button>
             </div>
 
             {/* Recent Transactions */}
-            <div className="mt-8">
+            {/* <div className="mt-8">
               <h2 className="text-lg font-medium text-gray-900 mb-4">Recent Transactions</h2>
               <div className="bg-white border border-gray-200 rounded-lg divide-y divide-gray-200">
                 <div className="p-4 text-center text-gray-500">
                   {isLoading ? 'Loading transactions...' : 'No recent transactions'}
                 </div>
               </div>
+            </div> */}
+            {/* Transfer */}
+            <div>
+              To:<input
+                type="text"
+                placeholder="Enter address"
+                value={transferAddress}
+                onChange={(e) => setTransferAddress(e.target.value)}
+                className="w-full col-span-2 border border-gray-300 rounded-lg px-4 py-3 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              <input
+                type="number"
+                placeholder="Enter amount"
+                value={transferAmount}
+                onChange={(e) => setTransferAmount(e.target.value)}
+                className="w-full col-span-2 border border-gray-300 rounded-lg px-4 py-3 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              <button
+                className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg text-center transition-colors"
+                onClick={() => transfer()}
+              >
+                Transfer
+              </button>
             </div>
           </div>
         ) : (

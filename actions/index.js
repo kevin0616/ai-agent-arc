@@ -163,6 +163,28 @@ app.post("/sell-usdc", async (req, res) => {
   }
 });
 
+app.post("/send", async (req, res) => {
+  const { walletId, transferAmount, transferAddress } = req.body
+  try {
+    const response = await client.createTransaction({
+      walletId: walletId, // id from (MYWALLET)
+      tokenId: '15dc2b5d-0994-58b0-bf8c-3a0501148ee8', //usdc token id
+      destinationAddress: transferAddress, //address to (DEX SIMULATE)
+      amounts: [transferAmount],
+      fee: {
+        type: 'level',
+        config: {
+          feeLevel: 'HIGH'
+        }
+      }
+    });
+    console.log(response.data)
+    res.json(response.data)
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
 });

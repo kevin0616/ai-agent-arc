@@ -236,33 +236,49 @@ const ChatPage = () => {
   return (
     <>
     <ChatInterface />
-    <div className="p-6 space-y-4">
-      <div className="text-xl font-semibold">Voice-enabled Chat</div>
-      <div className="space-x-2 items-center flex">
-        {!recording ? (
-          <button onClick={startRecording} className="px-3 py-2 bg-blue-600 text-white rounded">Start Mic</button>
-        ) : (
-          <button onClick={stopRecording} className="px-3 py-2 bg-red-600 text-white rounded">Stop</button>
-        )}
+    <div className="p-6 space-y-4 max-w-4xl mx-auto">
+      <div className="text-center space-y-2 mb-6">
+        <h1 className="text-3xl font-bold text-blue-600">PayFlow AI</h1>
+        <p className="text-gray-600">Natural Language Blockchain Payments on Arc</p>
+        <p className="text-sm text-gray-500">Try: "What's my balance?" or "Send 2 USDC to Bob"</p>
       </div>
-      <div className="border rounded p-3 space-y-2 min-h-[120px]">
+      
+      <div className="border-2 border-gray-200 rounded-lg p-4 space-y-3 min-h-[300px] bg-gray-50">
         {messages.map((m, i) => (
-          <div key={i} className={m.role === 'user' ? 'text-right' : 'text-left'}>
-            <span className="text-sm opacity-70 mr-2">{m.role}:</span>
-            <span>{m.content}</span>
+          <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+            <div className={`max-w-[80%] rounded-lg px-4 py-2 ${
+              m.role === 'user' 
+                ? 'bg-blue-600 text-white' 
+                : 'bg-white border border-gray-300 text-gray-800'
+            }`}>
+              <div className="text-xs opacity-70 mb-1">{m.role === 'user' ? 'You' : 'PayFlow AI'}</div>
+              <div className="text-sm">{m.content}</div>
+            </div>
           </div>
         ))}
-        {!messages.length && <div className="opacity-60">Speak a message to get started…</div>}
+        {!messages.length && (
+          <div className="text-center text-gray-400 mt-24">
+            <div className="text-lg mb-2">💬 Start a conversation</div>
+            <div className="text-sm">Ask about your balance, send USDC, or check transactions</div>
+          </div>
+        )}
       </div>
+      
       <div className="flex gap-2">
         <input
-          className="flex-1 border rounded px-3 py-2"
-          placeholder="Type a message"
+          className="flex-1 border-2 border-gray-300 rounded-lg px-4 py-3 text-lg focus:border-blue-500 focus:outline-none"
+          placeholder="Type your command... (e.g., 'What's my balance?')"
           value={textInput}
           onChange={(e) => setTextInput(e.target.value)}
           onKeyDown={(e) => { if (e.key === 'Enter') sendText() }}
+          autoFocus
         />
-        <button onClick={sendText} className="px-3 py-2 bg-green-600 text-white rounded">Send</button>
+        <button 
+          onClick={sendText} 
+          className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors"
+        >
+          Send
+        </button>
       </div>
     </div>
     </>

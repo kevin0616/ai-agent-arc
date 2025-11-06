@@ -24,7 +24,7 @@ const ChatPage = () => {
     try {
       // Help command
       if (text.includes('help') || text.includes('commands') || text.includes('what can you do')) {
-        return `I'm PayFlow AI - your blockchain payment assistant! Here's what I can do:\n\n💰 CHECK BALANCE\n"What's my balance?"\n"How much USDC do I have?"\n\n📍 WALLET INFO\n"What's my wallet address?"\n"Show my wallet ID"\n\n💸 SEND USDC\n"Send 10 USDC to Bob"\n"Pay 5 dollars to Alice"\n"Transfer 20 to merchant"\n\n📊 TRANSACTION HISTORY\n"Show my transactions"\n"Transaction history"\n\nAll transactions are real and executed on Arc testnet blockchain!`;
+        return `I'm PayFlow AI - your blockchain payment assistant!\n\nI can help you with:\n\n1. CHECK BALANCE\n   - "What's my balance?"\n   - "How much USDC do I have?"\n\n2. WALLET INFORMATION\n   - "What's my wallet address?"\n   - "Show my wallet ID"\n\n3. SEND USDC\n   - "Send 10 USDC to Bob"\n   - "Pay 5 dollars to Alice"\n   - "Transfer 20 to merchant"\n\n4. TRANSACTION HISTORY\n   - "Show my transactions"\n   - "Transaction history"\n\nAll transactions are real and executed on Arc testnet blockchain!`;
       }
       
       // Check balance command - handle many variations
@@ -128,7 +128,7 @@ const ChatPage = () => {
       }
       
       // Default response - be helpful!
-      return `I can help you with:\n\n💰 Check Balance: "What's my balance?" or "How much money do I have?"\n\n📍 Wallet Info: "What's my wallet address?" or "Show my wallet ID"\n\n💸 Send USDC: "Send 10 USDC to Bob" or "Pay 5 to Alice"\n\n📊 History: "Show my transactions" or "Transaction history"\n\nTry one of these commands!`;
+      return `I didn't quite understand that. I can help you with:\n\n1. Check Balance\n   Example: "What's my balance?"\n\n2. Wallet Information\n   Example: "Show my wallet ID"\n\n3. Send USDC\n   Example: "Send 10 USDC to Bob"\n\n4. Transaction History\n   Example: "Show my transactions"\n\nType "help" to see all commands!`;
       
     } catch (error) {
       console.error('Error processing command:', error);

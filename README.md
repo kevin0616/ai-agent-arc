@@ -43,7 +43,7 @@ PayFlow AI makes crypto payments as simple as speaking. No more copying 42-chara
 
 ## 🎥 Demo Video
 
-> **[▶️ Watch 5-Minute Demo Video](2025-11-08 12-26-13.mp4)**
+> **[▶️ Watch 5-Minute Demo Video](https://drive.google.com/file/d/1sChhcsqXE8ThQ9WaYBV8OUhVIL_5n2-W/view?usp=drive_link)**
 
 See PayFlow AI in action:
 - ✅ Voice-activated wallet queries
